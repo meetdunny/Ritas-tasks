@@ -91,6 +91,15 @@ svg{display:block}
 .btn.wide{width:100%;padding:15px;border-radius:26px;font-size:15px}
 .btn:disabled{opacity:.5}
 .ring{flex:none;position:relative;width:84px;height:84px}
+.ill{display:block;max-width:100%;height:auto}
+.hart{display:flex;align-items:center;gap:18px;flex:none;position:relative}
+.hero-ill{width:150px;height:150px;margin:-10px 0}
+.sc-ill{position:relative;z-index:1}
+.sc .tag{margin-top:6px}
+
+.empty .ill{width:150px;height:150px;margin:0 auto 6px}
+.rv-ill{width:110px;height:110px;margin:-4px auto 4px}
+.banner.off{display:flex;align-items:center;gap:12px;text-align:left}.off-ill{width:52px;height:52px;flex:none}
 .ring b{position:absolute;inset:0;display:grid;place-items:center;font-weight:600;font-size:15px}
 .sec{display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 12px}
 .sec h3{font:600 17px Poppins,sans-serif;margin:0}
@@ -248,7 +257,9 @@ textarea.in{resize:vertical;min-height:70px}
 .hgrid{display:grid;gap:14px}
 .hgrid.b{gap:30px}
 .glance{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.sched{grid-auto-rows:1fr}
+.sched.mas{display:flex;gap:12px;align-items:flex-start}.sched.mas>.col{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
+.sched.one{display:block}.sched.one>.sc{width:100%}
+.sc .sc-ill{display:block;width:100%;max-width:150px;height:auto;margin:6px auto -10px}
 .sc{min-height:112px}
 .sc .tag{margin-top:auto}
 .subs{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:1fr}
@@ -316,6 +327,7 @@ body:has(#nav[hidden]){padding-left:0}
   .sheetlink{display:inline-block;padding:12px 0}
   .top h1,.top h1.plain{max-width:none}
   .hero{flex-direction:column-reverse;text-align:center;gap:14px;padding:24px 20px}
+  .hero-ill{width:130px;height:130px;margin:-6px 0}
   .hero h2{max-width:none;margin-bottom:12px}
   .hero small{margin:-6px 0 14px}
   .sec{flex-direction:column;align-items:center;gap:2px;text-align:center}
@@ -324,7 +336,6 @@ body:has(#nav[hidden]){padding-left:0}
   .sc .tag{justify-content:center}
   .sb .bar{width:100%}
   .sb.add{grid-column:1/-1;min-height:64px}
-  .sched>.sc:last-child:nth-child(odd){grid-column:1/-1}
   .grp h4{justify-content:center}
   .panel>strong{display:block;text-align:center}
   .legend{justify-content:center}
@@ -371,6 +382,11 @@ var I={
   check:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'
 };
 var LOGO='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><clipPath id="rc"><circle cx="50" cy="50" r="50"/></clipPath></defs><circle cx="50" cy="50" r="50" fill="#FDEBD8"/><g clip-path="url(#rc)" stroke-linejoin="round"><path fill="#234F5F" stroke="#234F5F" stroke-width="1" d="M60.9 7.2L58.2 6.0L55.7 5.2L54.0 5.0L53.0 4.4L52.4 4.2L51.7 4.4L50.5 5.0L46.6 5.4L43.9 6.4L41.7 7.5L39.4 9.1L36.5 12.3L34.3 15.1L32.1 19.6L29.5 26.4L26.3 38.0L25.3 40.3L24.7 42.8L24.0 44.6L23.7 46.1L22.4 49.3L22.3 51.8L23.0 53.5L22.8 54.6L20.7 57.4L14.9 59.1L11.8 62.3L9.1 66.5L6.4 71.8L4.6 76.5L1.1 84.0L0.3 86.7L0.2 88.2L-2.2 94.4L-3.0 97.1L-5.0 100.3L-5.2 102.6L-6.1 103.9L-7.1 106.2L-7.9 107.2L-9.4 109.7L-9.9 111.6L-9.7 114.2L-11.0 117.1L-11.0 119.8L10.2 119.8L9.9 118.8L10.2 117.6L11.3 116.4L12.0 115.1L12.9 114.7L13.4 114.7L13.9 115.1L14.4 116.5L14.4 118.0L13.8 119.8L97.5 119.8L97.5 118.3L89.2 117.5L88.1 117.2L86.0 117.2L84.8 116.7L84.4 116.1L84.5 115.4L85.1 114.0L85.2 112.6L86.0 110.9L86.0 109.3L86.7 107.6L89.7 103.4L92.2 101.6L93.1 99.5L93.1 98.6L92.6 97.4L90.3 94.6L89.0 92.8L88.6 91.9L88.7 89.4L91.0 84.5L91.0 82.5L87.8 77.8L86.3 73.4L86.4 70.9L85.5 68.8L85.3 67.1L84.7 66.1L82.5 63.9L81.5 61.3L80.0 58.7L78.0 54.6L77.9 47.8L77.4 45.6L77.3 44.0L76.5 40.5L75.5 38.4L75.3 36.8L74.3 35.4L73.7 33.9L73.9 31.2L72.3 25.6L71.9 23.3L69.4 17.2L66.6 12.6L65.6 11.2L63.2 8.8Z"/><path fill="#F4A640" stroke="#F4A640" stroke-width=".8" d="M47.0 18.8L45.2 19.2L43.6 20.1L42.3 20.6L40.8 22.1L40.1 23.8L39.4 27.2L37.8 29.5L37.8 30.1L38.2 31.5L38.1 34.5L37.6 35.6L35.8 37.5L34.7 41.1L34.7 42.2L35.2 43.4L37.7 47.6L42.1 55.9L42.7 57.8L42.7 58.9L42.2 60.0L39.4 62.7L39.5 66.1L39.1 67.3L36.9 69.4L36.6 69.9L36.6 71.2L37.1 73.7L37.1 77.1L37.4 78.2L37.4 82.2L37.1 83.3L37.0 84.8L37.3 84.9L37.9 84.4L40.7 80.3L43.8 76.9L45.0 74.7L44.8 73.5L42.1 70.3L41.9 69.3L41.9 68.3L42.3 67.0L43.8 65.5L44.6 65.1L46.2 64.9L47.9 65.3L49.3 66.6L50.5 68.7L52.2 71.0L53.5 71.9L54.8 73.3L55.3 74.3L55.4 77.6L55.6 78.8L55.6 82.5L55.9 83.6L55.9 87.3L56.5 90.9L56.5 98.3L56.7 99.5L56.7 101.3L57.0 102.4L57.1 104.4L57.6 107.1L58.6 109.1L60.3 111.2L61.4 111.7L62.2 111.8L62.8 111.6L63.4 111.0L64.9 108.8L67.3 105.8L70.6 102.6L72.8 100.0L73.8 98.3L73.9 96.8L73.5 95.7L71.9 93.4L70.0 89.7L68.3 85.1L66.9 80.7L64.8 74.8L64.0 74.1L62.0 73.9L61.2 73.6L59.9 72.4L59.4 71.3L59.3 70.2L59.6 69.2L61.1 67.2L61.0 66.5L60.4 64.7L60.5 61.1L59.6 59.5L59.3 58.5L59.3 57.5L59.9 55.3L59.9 53.4L60.4 52.3L61.7 51.1L62.6 50.7L64.4 50.6L64.9 50.2L64.4 48.3L64.4 45.4L64.9 42.3L64.8 41.9L62.8 40.1L62.4 39.0L62.3 35.2L61.8 32.7L61.8 30.9L61.3 29.4L61.2 27.7L60.1 26.4L54.7 21.2L51.8 19.5L50.0 18.9Z"/></g></svg>';
+/* illustrations: decorative, so they carry no alt text */
+/* Today's Schedule in two staggered columns, like a masonry board: cards 1 and 3 on the left, 2 and 4 on the right */
+function schedCols(cards){if(cards.length<2||!cards[0].classList.contains('sc'))return h('div',{class:'sched one'},cards);
+  return h('div',{class:'sched mas'},h('div',{class:'col'},cards.filter(function(c,i){return i%2===0;})),h('div',{class:'col'},cards.filter(function(c,i){return i%2===1;})));}
+var ill=function(n,c){return h('img',{class:'ill '+(c||''),src:'ill_'+n+'.webp',alt:'',loading:'lazy',decoding:'async',width:'560',height:'560'});};
 var pad=function(n){return String(n).padStart(2,'0');};
 var ymd=function(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());};
 var parse=function(s){var p=String(s).split('-').map(Number);return new Date(p[0],p[1]-1,p[2]);};
@@ -588,9 +604,9 @@ function viewHome(){var td=today(),p=person(me);
   var n={late:S.tasks.filter(late).length,wait:S.tasks.filter(function(t){return t.status==='waiting';}).length,mine:S.tasks.filter(forMe).length};
   var cards=show.map(function(t,i){var d=dueText(t),lt=d&&d.cls==='late';return h('button',{class:'sc'+(i%4===1||i%4===2?' p':''),type:'button',onclick:function(){openTask(t.id);}},
     h('strong',{text:t.title}),h('small',{style:lt?'color:var(--red)':'',text:lt?d.text:t.start?(t.start+(t.end?' to '+t.end:'')):'Any time today'}),
-    h('span',{class:'tag'},h('i',{class:'dot',style:'background:'+sColor(t.subjectId)}),sName(t.subjectId)));});
+    h('span',{class:'tag'},h('i',{class:'dot',style:'background:'+sColor(t.subjectId)}),sName(t.subjectId)),i%4===1?ill('card_meeting','sc-ill'):i%4===2?ill('card_planning','sc-ill'):null);});
   if(sched.length>show.length)cards.push(h('button',{class:'sc more',type:'button',onclick:function(){goTasks('today');}},h('strong',null,'Click to view more'),h('small',{text:'+'+(sched.length-show.length)+' schedule'})));
-  if(!cards.length)cards=[h('div',{class:'empty'},h('b',null,'Nothing due today'),'Use the orange plus to add a task.')];
+  if(!cards.length)cards=[h('div',{class:'empty'},ill('empty_today'),h('b',null,'Nothing due today'),'Use the orange plus to add a task.')];
   var next=S.tasks.filter(function(t){return open(t)&&t.due&&t.due>td;}).sort(sortT).slice(0,5),undated=S.tasks.filter(function(t){return open(t)&&!t.due;}).length;
   var subs=liveSubjects().map(function(s){var all=S.tasks.filter(function(t){return t.subjectId===s.id;}),o=all.filter(open).length,pc=all.length?Math.round((all.length-o)/all.length*100):0;
     return h('button',{class:'sb',type:'button',onclick:function(){goTasks('open',s.id);}},h('i',{class:'dot',style:'background:'+s.color+';width:12px;height:12px'}),
@@ -601,13 +617,13 @@ function viewHome(){var td=today(),p=person(me);
       h('button',{class:'btn sm',type:'button',onclick:function(){send('timerStop',{id:rn.t.id},true);}},'Stop')):null,h('div',{class:'page'},
     h('div',{class:'hgrid'},
       h('section',{class:'hero'},h('div',null,h('h2',{text:msg}),total?h('small',{text:doneT.length+' of '+total+' done'}):null,
-        h('button',{class:'btn sm',type:'button',onclick:function(){goTasks('today');}},'View Task')),ring(pct)),
+        h('button',{class:'btn sm',type:'button',onclick:function(){goTasks('today');}},'View Task')),h('div',{class:'hart'},ill(total&&pct===100?'all_done':'home_hero','hero-ill'),ring(pct))),
       h('div',{class:'glance'},
         h('button',{class:'pill r',type:'button',onclick:function(){goTasks('late');}},h('b',{text:n.late}),h('span',null,'Overdue')),
         h('button',{class:'pill o',type:'button',onclick:function(){goTasks('waiting');}},h('b',{text:n.wait}),h('span',null,'Waiting')),
         h('button',{class:'pill t',type:'button',onclick:function(){goTasks('forme');}},h('b',{text:n.mine}),h('span',null,'New for you')))),
     h('div',{class:'hgrid b'},
-      h('div',{class:'blk'},h('div',{class:'sec'},h('h3',null,"Today's Schedule"),h('span',{text:DAYL[parse(td).getDay()]+', '+short(td)})),h('div',{class:'sched'},cards)),
+      h('div',{class:'blk'},h('div',{class:'sec'},h('h3',null,"Today's Schedule"),h('span',{text:DAYL[parse(td).getDay()]+', '+short(td)})),schedCols(cards)),
       h('div',{class:'blk'},h('div',{class:'sec'},h('h3',null,'Coming up'),h('button',{type:'button',onclick:function(){V.tab='cal';render();}},'Calendar')),
         next.length?h('div',{class:'rows'},next.map(function(t){return row(t,true);})):h('div',{class:'empty'},h('b',null,'Nothing coming up'),'Tasks with a later due date show here.'),
         undated?h('button',{class:'btn ghost sm',style:'margin-top:12px',type:'button',onclick:function(){goTasks('open');},text:undated+(undated===1?' open task has':' open tasks have')+' no due date'}):null)),
@@ -626,7 +642,7 @@ function viewTasks(){var list=S.tasks.filter(match),groups={},order=[];
   order.sort(function(a,b){return sName(a).localeCompare(sName(b));});
   var body=order.map(function(k){var g=groups[k].sort(sortT);return h('section',{class:'grp'},
     h('h4',null,h('i',{class:'dot',style:'background:'+sColor(k)}),sName(k),h('span',{text:g.length+(g.length===1?' task':' tasks')})),h('div',{class:'rows'},g.map(function(t){return row(t,false);})));});
-  if(!list.length)body=[h('div',{class:'empty',style:'margin-top:20px'},h('b',null,S.tasks.length?'Nothing matches this view':'No tasks yet'),S.tasks.length?'Try another filter, or clear the search.':'Tap the orange plus to add the first task.')];
+  if(!list.length)body=[h('div',{class:'empty',style:'margin-top:20px'},ill(S.tasks.length?'empty_tasks':'empty_today'),h('b',null,S.tasks.length?'Nothing matches this view':'No tasks yet'),S.tasks.length?'Try another filter, or clear the search.':'Tap the orange plus to add the first task.')];
   return [topbar('Tasks',list.filter(open).length+' open in this view'),
     h('div',{class:'narrow'},h('div',{class:'search'},h('span',{html:I.search}),h('input',{id:'q',type:'search',placeholder:'Search tasks, subjects, notes','aria-label':'Search tasks',value:V.q,oninput:function(e){V.q=e.target.value;render();}})),
     h('div',{class:'chips'},FILT.map(function(f){return h('button',{class:'chip o',type:'button','aria-pressed':String(V.status===f[0]),onclick:function(){V.status=f[0];render();}},f[1]);})),
@@ -649,7 +665,7 @@ function viewCal(){var sel=V.cal,d=parse(sel),start=addDays(sel,-((d.getDay()+6)
   any.forEach(function(t,i){tl.push(h('time',{text:i?'':'Any time'}),card(t,i+timed.length));});
   var right=h('div',null,
     h('div',{class:'sec'},h('h3',{text:DAYL[d.getDay()]+', '+ord(d.getDate())}),h('span',{text:list.length+(list.length===1?' task':' tasks')})),
-    list.length?h('div',{class:'tl'},tl):h('div',{class:'empty'},h('b',null,'A clear day'),'Nothing is scheduled. Use the button on the calendar to add a task for this day.'),
+    list.length?h('div',{class:'tl'},tl):h('div',{class:'empty'},ill('empty_calendar'),h('b',null,'A clear day'),'Nothing is scheduled. Use the button on the calendar to add a task for this day.'),
     carried.length?[h('div',{class:'sec'},h('h3',null,'Carried over'),h('span',{text:carried.length+' overdue'})),h('div',{class:'rows'},carried.map(function(t){return row(t,true);}))]:null);
   var cal=h('section',{class:'cal'},
     h('div',{class:'calh'},h('button',{type:'button','aria-label':'Previous week',html:I.l,onclick:function(){V.cal=addDays(sel,-7);render();}}),
@@ -691,7 +707,7 @@ function viewStats(){var td=today(),wk=Date.now()-7*864e5,o=S.tasks.filter(open)
       return [h('div',{class:'sec'},h('h3',null,'Time tracked'),h('span',{text:'Last 7 days · '+dur(tot)})),
         tot?h('div',{class:'two'},h('div',{class:'panel'},h('strong',null,'By subject'),h('div',{style:'margin-top:8px'},ks.map(function(k){return bar(sName(k),bySub[k],mx,sColor(k));}))),
           h('div',{class:'panel'},h('strong',null,'By person'),h('div',{style:'margin-top:8px'},ws.map(function(k){return bar(pName(k),byWho[k],wx);}))))
-        :h('div',{class:'empty'},h('b',null,'No time tracked yet'),'Open a task and start its timer, or add time by hand.')];})(),
+        :h('div',{class:'empty'},ill('empty_time'),h('b',null,'No time tracked yet'),'Open a task and start its timer, or add time by hand.')];})(),
     h('div',{class:'sec'},h('h3',null,'Going quiet'),h('span',null,'Open, no change in 5 days')),
     stale.length?h('div',{class:'rows'},stale.map(function(t){return row(t,true);})):h('div',{class:'empty'},h('b',null,'Nothing is going quiet'),'Every open task has moved in the last 5 days.')];}
 
@@ -734,7 +750,7 @@ function keep(fn){var a=document.activeElement,id=a&&a.id,ss,se;try{ss=a.selecti
 function render(){if(!S)return;if(V.tab==='more'&&!S.owner)V.tab='home';keep(function(){
   var app=$('#app'),parts=[].concat.apply([],VIEWS[V.tab]().map(function(x){return x==null?[]:Array.isArray(x)?x:[x];}));
   var sl=[].map.call(document.querySelectorAll('#app .chips'),function(c){return c.scrollLeft;});
-  if(offline)parts.splice(1,0,h('div',{class:'banner',role:'status'},Q.length?'You are offline. '+Q.length+(Q.length===1?' change is':' changes are')+' saved on this device and will be sent when you reconnect.':'You are offline. Showing the last saved view. New changes will be sent when you reconnect.'));
+  if(offline)parts.splice(1,0,h('div',{class:'banner off',role:'status'},ill('offline','off-ill'),Q.length?'You are offline. '+Q.length+(Q.length===1?' change is':' changes are')+' saved on this device and will be sent when you reconnect.':'You are offline. Showing the last saved view. New changes will be sent when you reconnect.'));
   app.replaceChildren.apply(app,parts.filter(Boolean));
   [].forEach.call(document.querySelectorAll('#app .chips'),function(c,i){if(sl[i])c.scrollLeft=sl[i];});
   var nav=$('#nav');nav.hidden=false;
@@ -771,7 +787,7 @@ function renderTask(){var d=M.d,t=M.id?S.tasks.find(function(x){return x.id===M.
     else if(!dl)out.push(h('div',{class:'cd none'},h('span',{class:'cdl'},'No deadline'),h('strong',null,'Set a due date to start the countdown')));
     else out.push(h('div',{class:'cd'+(dl<Date.now()?' over':''),'data-dl':String(dl),role:'timer'},h('span',{class:'cdl',text:dl<Date.now()?'Overdue by':'Time left'}),
       h('div',{class:'cdn'},['days','hrs','min','sec'].map(function(u){return h('span',null,h('b',null,'00'),h('i',null,u));})),h('small',{text:'Due '+when})));}
-  if(t&&t.status==='review'){var mineToSign=toSign(t);out.push(h('div',{class:'panel rv'},h('strong',{text:mineToSign?'Ready for your sign off':'Awaiting sign off from '+pName(t.createdBy)}),
+  if(t&&t.status==='review'){var mineToSign=toSign(t);out.push(h('div',{class:'panel rv'},ill('sign_off','rv-ill'),h('strong',{text:mineToSign?'Ready for your sign off':'Awaiting sign off from '+pName(t.createdBy)}),
       mineToSign?[h('p',{class:'note',style:'margin:2px 0 8px',text:pName(t.assignee)+' has marked this finished. Sign it off, or send it back with a note.'}),
         h('input',{class:'in',id:'t-back',maxlength:1000,placeholder:'Note if sending back, optional','aria-label':'Note for sending back',value:M.back,oninput:bind(M,'back')}),
         h('div',{class:'acts',style:'margin-top:10px'},h('button',{class:'btn sm',type:'button',onclick:function(){d.status='done';send('saveTask',{task:{id:t.id,status:'done'}},true);toast('Signed off');}},'Sign off'),
