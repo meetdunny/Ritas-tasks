@@ -1,6 +1,6 @@
 /* Rita's Task Manager service worker: keeps the app shell available offline.
    Task data is never cached here; it only ever travels between the page and the Google Sheet. */
-const CACHE = 'rtm-shell-v1';
+const CACHE = 'rtm-shell-v3';
 const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {
@@ -22,4 +22,13 @@ self.addEventListener('fetch', (e) => {
       return res;
     }).catch(() => caches.match(req, { ignoreSearch: true }).then((hit) => hit || caches.match('index.html')))
   );
+});
+
+/* tapping a deadline alert brings the app to the front, or opens it */
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+    for (const c of list) { if ('focus' in c) return c.focus(); }
+    return self.clients.openWindow('./');
+  }));
 });
