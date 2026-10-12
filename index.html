@@ -506,6 +506,7 @@ function seenM(){try{return JSON.parse(store.get('rtm-seen-m')||'{}')||{};}catch
 function newMentions(t){var s=seenM()[t.id]||0;return (t.updates||[]).filter(function(u){return u.by!==me&&u.at>s&&(u.mentions||[]).indexOf(me)>=0;}).length;}
 function markMentions(t){var s=seenM();s[t.id]=Date.now();store.set('rtm-seen-m',JSON.stringify(s));}
 var toSign=function(t){return t.status==='review'&&t.createdBy===me;};
+var canPriv=function(){var p=person(me);return !!(S.owner||(p&&p.canPrivate));};
 var hidden=function(t){var sb=subj(t.subjectId);return !!(t.private||(sb&&sb.privateTo));};
 
 /* ---------- shared pieces ---------- */
@@ -531,7 +532,7 @@ function tick(){var now=Date.now();
 (function loop(){try{tick();}catch(e){}setTimeout(loop,1000-Date.now()%1000+8);})();   // flips exactly on each new second
 function clockRow(){var zs=zoneList();if(!zs.length&&myTz)zs=[{city:zoneName(myTz),tz:myTz}];
   return h('div',{class:'clocks'},zs.map(function(z){return h('div',{class:'clk'+(z.tz===myTz||zs.length===1?' mine':''),'data-clk':z.tz,role:'timer','aria-label':'Time in '+z.city},
-    h('small',{text:z.city+(z.tz===myTz?' · you':'')}),h('div',{class:'dg'},h('span',{class:'hm'},'00:00'),h('span',{class:'ss'},'00')),h('span',{class:'dt'},'')) ;}));}
+    h('small',{text:z.city+' time'}),h('div',{class:'dg'},h('span',{class:'hm'},'00:00'),h('span',{class:'ss'},'00')),h('span',{class:'dt'},'')) ;}));}
 function greeting(){var p=person(me),hr=new Date().getHours(),part=hr<5?'Still up':hr<12?'Good morning':hr<17?'Good afternoon':hr<22?'Good evening':'Good night',td=today();
   var mine=S.tasks.filter(function(t){return open(t)&&(t.assignee===me||(!person(t.assignee)&&t.createdBy===me));});
   var due=mine.filter(function(t){return t.due===td;}).length,lt=mine.filter(late).length,nw=S.tasks.filter(forMe),doneT=S.tasks.filter(function(t){return doneOn(t,td)&&t.assignee===me;}).length;
@@ -700,7 +701,7 @@ function viewMore(){var p=person(me),st=S.settings,hours=[];for(var i=0;i<24;i++
     h('div',{class:'two'},
       h('div',null,h('div',{class:'sec',style:'margin-top:6px'},h('h3',null,'People'),S.owner?h('button',{type:'button',onclick:function(){openPerson();}},'Add person'):null),
         h('div',{class:'panel list'},S.people.map(function(x){return h(S.owner?'button':'div',{class:'li',type:S.owner?'button':null,onclick:S.owner?function(){openPerson(x.id);}:null},h('span',{class:'who',text:initials(x.name)}),
-          h('div',null,h('strong',{text:x.name}),h('small',{text:[x.role,x.email,x.code?'Code '+x.code:''].filter(Boolean).join(' · ')||'No details yet'})),x.id===me?h('span',{class:'tagr'},'This is you'):null);})),
+          h('div',null,h('strong',{text:x.name}),h('small',{text:[x.role,x.email,x.code?'Code '+x.code:'',x.canPrivate&&x.id!==me?'Can make private':'',x.hidden?(x.ownerSees?'Hidden, visible to you':'Hidden'):''].filter(Boolean).join(' · ')||'No details yet'})),x.id===me?h('span',{class:'tagr'},'This is you'):null);})),
         S.owner?h('p',{class:'note'},'Each person signs in with their own code. Send a code only to its owner.'):null),
       h('div',null,h('div',{class:'sec',style:'margin-top:6px'},h('h3',null,'Subjects'),h('button',{type:'button',onclick:function(){openSubject();}},'Add subject')),
         h('div',{class:'panel list'},S.subjects.map(function(s){return h('button',{class:'li',type:'button',onclick:function(){openSubject(s.id);}},h('i',{class:'dot',style:'background:'+s.color+';width:14px;height:14px'}),
@@ -797,7 +798,7 @@ function renderTask(){var d=M.d,t=M.id?S.tasks.find(function(x){return x.id===M.
     fld('Repeats',h('select',{class:'in',id:'t-rep',value:d.repeat,onchange:bind(d,'repeat')},[['none','Does not repeat'],['daily','Every day'],['weekdays','Every weekday'],['weekly','Every week'],['monthly','Every month']].map(function(o){return h('option',{value:o[0],text:o[1]});})),true),
     M.multi?null:fld('Details',h('textarea',{class:'in',id:'t-details',rows:3,maxlength:5000,placeholder:'Context, links, what done looks like',value:d.details,oninput:bind(d,'details')}),true)));
   if((isNew||t.createdBy===me)&&!d.private)out.push(h('label',{class:'switch'},h('input',{type:'checkbox',id:'t-appr',checked:d.needsApproval,onchange:function(e){live({needsApproval:e.target.checked});}}),'Needs my sign off before it counts as done.'));
-  if(isNew||t.createdBy===me)out.push(h('label',{class:'switch'},h('input',{type:'checkbox',id:'t-priv',checked:d.private,onchange:function(e){var on=e.target.checked;live(on?{private:true,assignee:me,needsApproval:false}:{private:false});if(t)renderSheet();}}),'Private. Only I can see this task.'));
+  if((isNew||t.createdBy===me)&&(canPriv()||d.private))out.push(h('label',{class:'switch'},h('input',{type:'checkbox',id:'t-priv',checked:d.private,onchange:function(e){var on=e.target.checked;live(on?{private:true,assignee:me,needsApproval:false}:{private:false});if(t)renderSheet();}}),'Private. Only I can see this task.'));
   if(!M.multi){var addStep=function(){var v=M.step.trim();if(!v)return;M.step='';live({checklist:d.checklist.concat([{id:uid().slice(-6),text:v,done:false}])});if(!t)renderSheet();var f=$('#t-step');if(f)f.focus();};
     out.push(h('div',{class:'panel'},h('strong',null,'Steps'),d.checklist.length?null:h('p',{class:'note',style:'margin:4px 0 0'},'Break the task into steps you can tick off.'),
       d.checklist.map(function(c){return h('div',{class:'cl'+(c.done?' on':'')},
@@ -855,15 +856,20 @@ function renderSubject(){var d=M.d;return [head(M.id?'Subject':'New subject'),
   h('input',{class:'title-in',id:'s-name',maxlength:80,placeholder:'Client, project or area name','aria-label':'Subject name',value:d.name,oninput:bind(d,'name')}),
   fld('Type',h('select',{class:'in',id:'s-kind',value:d.kind,onchange:bind(d,'kind')},['Client','Project','Internal','Personal'].map(function(k){return h('option',{value:k,text:k});}))),
   h('div',{class:'lbl'},'Colour'),h('div',{class:'sw'},COLORS.map(function(c){return h('button',{type:'button',style:'background:'+c,'aria-label':'Colour '+c,'aria-pressed':String(d.color===c),onclick:function(){d.color=c;renderSheet();}});})),
-  (!M.id||d.privateTo===me)?h('label',{class:'switch'},h('input',{type:'checkbox',id:'s-priv',checked:d.private,onchange:function(e){d.private=e.target.checked;}}),'Private to me. Only I can see this subject and its tasks.'):null,
+  ((!M.id&&canPriv())||(M.id&&d.privateTo===me))?h('label',{class:'switch'},h('input',{type:'checkbox',id:'s-priv',checked:d.private,onchange:function(e){d.private=e.target.checked;}}),'Private to me. Only I can see this subject and its tasks.'):null,
   M.id?h('label',{class:'switch'},h('input',{type:'checkbox',id:'s-arch',checked:d.archived,onchange:function(e){d.archived=e.target.checked;}}),'Archive this subject. Its tasks are kept.'):null,
   h('button',{class:'btn wide',type:'button',onclick:function(){d.name=d.name.trim();if(!d.name){toast('Give the subject a name.');return;}var s=Object.assign({},d);closeSheet();send('saveSubject',{subject:s},true);toast('Subject saved');}},'Save subject')];}
 
-function openPerson(id){var p=id?person(id):null;M={kind:'person',id:id||null,d:p?Object.assign({},p):{id:uid(),name:'',email:'',role:''}};$('#ov').hidden=false;renderSheet();var f=$('#p-name');if(f&&!id)f.focus();}
+function openPerson(id){var p=id?person(id):null;M={kind:'person',id:id||null,d:p?Object.assign({},p):{id:uid(),name:'',email:'',role:'',canPrivate:false,hidden:false,ownerSees:false}};$('#ov').hidden=false;renderSheet();var f=$('#p-name');if(f&&!id)f.focus();}
 function renderPerson(){var d=M.d;return [head(M.id?'Person':'New person'),
   h('input',{class:'title-in',id:'p-name',maxlength:60,placeholder:'Name','aria-label':'Name',value:d.name,oninput:bind(d,'name')}),
   h('div',{class:'frow'},fld('Email, optional',h('input',{class:'in',id:'p-email',type:'email',maxlength:120,value:d.email,oninput:bind(d,'email')})),fld('Role, optional',h('input',{class:'in',id:'p-role',maxlength:40,placeholder:'CEO, Analyst',value:d.role,oninput:bind(d,'role')}))),
-  h('button',{class:'btn wide',type:'button',onclick:function(){d.name=d.name.trim();if(!d.name){toast('Add a name.');return;}var p=Object.assign({},d);closeSheet();send('savePerson',{person:p},true);toast('Saved. Their access code shows in the People list.');}},'Save person'),
+  d.id===me?h('p',{class:'note',style:'margin:0'},'As the owner you can always make tasks private.')
+    :[h('label',{class:'switch'},h('input',{type:'checkbox',id:'p-priv',checked:!!d.canPrivate,onchange:function(e){d.canPrivate=e.target.checked;}}),'Can make tasks and subjects private'),
+      h('label',{class:'switch'},h('input',{type:'checkbox',id:'p-hide',checked:!!d.hidden,onchange:function(e){d.hidden=e.target.checked;if(!d.hidden)d.ownerSees=false;renderSheet();}}),'Hidden from others'),
+      d.hidden?h('label',{class:'switch',style:'padding-left:30px'},h('input',{type:'checkbox',id:'p-sees',checked:!!d.ownerSees,onchange:function(e){d.ownerSees=e.target.checked;}}),'Let me see their tasks'):null,
+      d.hidden?h('p',{class:'note',style:'margin:0'},'Nobody else sees this person or their tasks. Tasks you assign to them always stay visible to you.'):null],
+  h('button',{class:'btn wide',type:'button',onclick:function(){d.name=d.name.trim();if(!d.name){toast('Add a name.');return;}var p=Object.assign({},d);closeSheet();send('savePerson',{person:p},true);if('hidden' in p)setTimeout(refresh,600);toast('Saved. Their access code shows in the People list.');}},'Save person'),
   M.id?h('button',{class:'btn ghost',type:'button',onclick:function(){var p=Object.assign({newCode:true},d);closeSheet();send('savePerson',{person:p},true);toast('New code issued. The old one no longer works.');}},'Issue a new access code'):null];}
 
 function openTemplate(id){var t=id?S.templates.find(function(x){return x.id===id;}):null;M={kind:'tpl',id:id||null,del:false,d:t?{id:t.id,name:t.name,lines:t.lines}:{id:uid(),name:'',lines:''}};$('#ov').hidden=false;renderSheet();var f=$('#tp-name');if(f&&!id)f.focus();}
