@@ -1,7 +1,9 @@
 /* Rita's Task Manager service worker: keeps the app shell available offline.
    Task data is never cached here; it only ever travels between the page and the Google Sheet. */
-const CACHE = 'rtm-shell-v5';
-const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png'];
+const CACHE = 'rtm-shell-v6';
+const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png',
+  'ill_home_hero.webp', 'ill_all_done.webp', 'ill_card_meeting.webp', 'ill_card_planning.webp', 'ill_empty_today.webp', 'ill_empty_tasks.webp',
+  'ill_empty_calendar.webp', 'ill_empty_time.webp', 'ill_sign_off.webp', 'ill_offline.webp'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
