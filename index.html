@@ -387,6 +387,7 @@ var LOGO='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><c
 function schedCols(cards){if(cards.length<2||!cards[0].classList.contains('sc'))return h('div',{class:'sched one'},cards);
   return h('div',{class:'sched mas'},h('div',{class:'col'},cards.filter(function(c,i){return i%2===0;})),h('div',{class:'col'},cards.filter(function(c,i){return i%2===1;})));}
 var ill=function(n,c){return h('img',{class:'ill '+(c||''),src:'ill_'+n+'.webp',alt:'',loading:'lazy',decoding:'async',width:'560',height:'560'});};
+var APP_VERSION='12 Oct 2026, build 7';
 var pad=function(n){return String(n).padStart(2,'0');};
 var ymd=function(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());};
 var parse=function(s){var p=String(s).split('-').map(Number);return new Date(p[0],p[1]-1,p[2]);};
@@ -739,7 +740,7 @@ function viewMore(){var p=person(me),st=S.settings,hours=[];for(var i=0;i<24;i++
       h('div',{class:'acts'},h('button',{class:'btn sm',type:'button',onclick:function(){send('saveSettings',{settings:{backupOn:$('#bk-on').checked,remindOn:$('#rm-on').checked,deadlineTz:$('#dl-tz').value,digestOn:$('#dg-on').checked,digestHour:Number($('#dg-hour').value),digestEmails:$('#dg-to').value.trim()}});}},'Save'),
         h('button',{class:'btn ghost sm',type:'button',onclick:function(){send('sendDigestNow',{});}},'Send handoff now'),
         h('button',{class:'btn ghost sm',type:'button',onclick:function(){toast('Backing up');send('backupNow',{});}},'Back up now')))]:null,
-    h('div',{class:'sec'},h('h3',null,'This device')),h('div',{class:'acts'},h('button',{class:'btn ghost sm',type:'button',onclick:signOut},'Sign out on this device'),installBtn(),alertBtn(),
+    h('div',{class:'sec'},h('h3',null,'This device'),h('span',{text:'App version: '+APP_VERSION})),h('div',{class:'acts'},h('button',{class:'btn ghost sm',type:'button',onclick:signOut},'Sign out on this device'),installBtn(),alertBtn(),
       API_URL?null:h('button',{class:'btn ghost sm',type:'button',onclick:function(){S=null;connectScreen();}},'Change the Sheet link')),
     S.sheetUrl?h('p',{style:'margin-top:22px'},h('a',{class:'sheetlink',href:S.sheetUrl,target:'_blank',rel:'noopener',style:'color:var(--teal);font-weight:500'},'Open the Google Sheet behind this app')):null];}
 
@@ -936,7 +937,7 @@ function checkAlerts(){if(!S||!alertsOn())return;var seen={};try{seen=JSON.parse
 setInterval(checkAlerts,60000);
 function openMe(){M={kind:'me'};$('#ov').hidden=false;renderSheet();}
 function renderMe(){var p=person(me);return [head(p?'Signed in as '+p.name:'Your account'),h('p',{class:'note',style:'margin:0'},'Signing out removes your access code from this device. You will need it to sign in again.'),
-  alertBtn(true),installBtn(true),h('button',{class:'btn wide',type:'button',onclick:signOut},'Sign out on this device')];}
+  alertBtn(true),installBtn(true),h('button',{class:'btn wide',type:'button',onclick:signOut},'Sign out on this device'),h('p',{class:'note',style:'margin:0;text-align:center',text:'App version: '+APP_VERSION})];}
 function askCode(wrong){M={kind:'code',force:true,v:'',wrong:wrong};$('#ov').hidden=false;renderSheet();}
 function renderCode(){return [head('Enter your access code'),h('p',{class:'note',style:'margin:0',text:M.wrong?'That code did not match. Check it and try again.':'Each person has a personal code. Ask the owner for yours.'}),
   h('input',{class:'title-in',id:'c-code',type:'password','aria-label':'Access code',value:M.v,oninput:bind(M,'v')}),
@@ -984,7 +985,13 @@ function boot(){
   if(Q.length){pump();return;}
   server('load',{}).then(function(res){if(!accept(res))return;pickMe();render();})
     .catch(function(err){if(S){offline=true;render();return;}connectScreen('Could not reach the Google Sheet: '+((err&&err.message)||'connection problem')+'. Check the link and that the web app access is set to Anyone.');});}
-if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(function(){});
+/* Keep the installed app current: check for a new version on every open and when the app returns to the screen,
+   and reload once when a new version takes over, so nobody is left on an old copy. */
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
+  var hadSW=!!navigator.serviceWorker.controller,reloaded=false;
+  navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(function(r){r.update().catch(function(){});
+    document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')r.update().catch(function(){});});}).catch(function(){});
+  navigator.serviceWorker.addEventListener('controllerchange',function(){if(hadSW&&!reloaded&&!Q.some(function(it){return it.a==='attach';})){reloaded=true;location.reload();}});}
 boot();
 setInterval(function(){if(S&&document.visibilityState==='visible'&&!(M&&M.force))refresh();},40000);
 document.addEventListener('visibilitychange',function(){if(S&&document.visibilityState==='visible')refresh();});
